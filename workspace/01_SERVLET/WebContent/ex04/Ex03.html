@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			/**
+			 *  #btn1의 'click'이벤트 처리
+			 */
+			$('#btn1').on('click',function(){
+				location.href = '../Ex03';
+			});
+			/**
+			 *  #btn2의 'clcik'이벤트 처리
+			 */
+			$('#btn2').click(function(){
+				const name = '브레드';
+				location.href = '../Ex03?name=' + name;
+			});
+			/**
+			 *  #btn3의 'clcik'이벤트 처리
+			 */
+			$('#btn3').click(function(){
+				const $height = $('#target1');
+				location.href = '../Ex03?height=' + $height.text();
+			});
+			/**
+			 *  #btn4의 'clcik'이벤트 처리
+			 */
+			$('#btn4').click(function(){
+				const $weight = $('#target2');
+				location.href = '../Ex03?weight=' + $weight.data('weight');
+				// location.href = '../Ex03?weight=' + $weight.attr('data-weight');
+			});	
+			
+		});
+	</script>
+</head>
+<body>
+	
+	<input type="button" value="Ex03서블릿열기1" id="btn1"><br><br>
+	<input type="button" value="Ex03서블릿열기2" id="btn2"><br><br>
+	
+	<span id="target1">180</span>
+	<input type="button" value="Ex03서블릿열기3" id="btn3"><br><br>
+
+	<span id="target2" data-weight="80.5"></span>
+	<input type="button" value="Ex03서블릿열기4" id="btn4"><br><br>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<script type="text/javascript">
+		onload = () => {
+			document.getElementById('btn1').addEventListener('click',function(){
+				location.href="../Quiz01?type=date";
+			});
+			
+			document.getElementById('btn2').addEventListener('click',function(){
+				location.href="../Quiz01?type=time";
+			});
+			
+		}
+	
+	</script>
+</head>
+<body>
+	<!-- 오늘 날짜를 경고창으로 보여주고 다시 돌아온다. -->
+	<input type="button" value="지금 날짜는?" id="btn1"><br>
+	
+	<!-- 현재 시간를 경고창으로 보여주고 다시 돌아온다. -->
+	<input type="button" value="지금 시간은?" id="btn2"><br>
+</body>
+</html>

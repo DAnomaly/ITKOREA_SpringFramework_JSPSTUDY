@@ -1,9 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%
-	request.setCharacterEncoding("utf-8");
-	String name = request.getParameter("name");
-%>    
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<p>이름: <%=name%></p>
-	<button onclick="history.go(-1)">뒤로가기</button>
+	<h1>가입되지 않았습니다.</h1>
+	<a href="../quiz/Quiz05_1.jsp">다시 가입하기</a>
 </body>
 </html>

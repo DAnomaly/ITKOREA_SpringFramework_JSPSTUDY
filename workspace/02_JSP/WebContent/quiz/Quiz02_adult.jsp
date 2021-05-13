@@ -1,9 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%
-	request.setCharacterEncoding("utf-8");
-	String name = request.getParameter("name");
-%>    
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +7,9 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<p>이름: <%=name%></p>
-	<button onclick="history.go(-1)">뒤로가기</button>
+	<h3>성인</h3>
+	<p>당신의 나이는 <%=request.getParameter("age")%>살 이므로 주류 구매가 가능합니다.</p>
+	<a href="javascript:history.back()">처음으로 이동</a>
+
 </body>
 </html>

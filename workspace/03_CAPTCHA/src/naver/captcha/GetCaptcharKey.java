@@ -1,4 +1,4 @@
-package naver.captchar;
+package naver.captcha;
 
 import java.io.BufferedReader;
 import java.io.IOException;

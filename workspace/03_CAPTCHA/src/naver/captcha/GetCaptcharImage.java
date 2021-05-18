@@ -1,4 +1,4 @@
-package naver.captchar;
+package naver.captcha;
 
 //네이버 캡차 API 예제 - 캡차 이미지 수신
 import java.io.*;
@@ -84,10 +84,9 @@ public class GetCaptcharImage {
      int read;
      byte[] bytes = new byte[1024];
      // 랜덤한 이름으로  파일 생성
-     String filename = Long.valueOf(new Date().getTime()).toString();
+     String filename = Long.valueOf(new Date().getTime()).toString() + ".jpg";
      map.put("filename", filename);
-     
-     File f = new File(filename + ".jpg");
+     File f = new File(filename);
      try(FileOutputStream outputStream = new FileOutputStream(f)){
          f.createNewFile();
          while ((read = is.read(bytes)) != -1) {

@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+body {
+	background-color: #c0c0c0;
+}
+
+.container {
+	margin: 120px auto;
+	width: 380px;
+	text-align: center;
+	border: 1px solid #909090;
+	border-radius: 3px;
+	background-color: white;
+}
+
+#captcahrImage {
+	width: 200px;
+}
+
+.login input {
+	margin: 5px 0;
+	padding: 3px 10px;
+	border: 0;
+	outline: none;
+	border: 1px solid gray;
+}
+
+.captcha {
+	margin: 5px auto;
+	padding: 5px 10px;
+	width: 300px;
+	background-color: #ddd;
+}
+
+.captcha input[type="text"] {
+	padding: 3px 5px;
+	width: 160px;
+	border: 1px solid silver;
+	outline: none;
+	margin: 5px;
+}
+
+.btn {
+	margin: 8px;
+}
+
+.btn button {
+	padding: 8px;
+	width: 90px;
+}

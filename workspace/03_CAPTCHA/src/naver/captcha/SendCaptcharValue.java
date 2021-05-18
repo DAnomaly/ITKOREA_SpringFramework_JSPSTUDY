@@ -1,4 +1,4 @@
-package naver.captchar;
+package naver.captcha;
 
 //네이버 캡차 API 예제 - 입력값 비교
 import java.io.BufferedReader;
@@ -40,17 +40,6 @@ public class SendCaptcharValue {
 
      System.out.println(responseBody);
      
-     /*
-     // obj 전달
-     JSONParser parser = new JSONParser();
-     
-     JSONObject obj = null;
-     try {
-		obj = (JSONObject) parser.parse(responseBody);
-	 } catch (ParseException e) {
-		e.printStackTrace();
-	 }
-     */
  }
 
  private static String get(String apiUrl, Map<String, String> requestHeaders){

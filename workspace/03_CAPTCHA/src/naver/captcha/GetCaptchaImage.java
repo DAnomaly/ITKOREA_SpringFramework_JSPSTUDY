@@ -15,7 +15,7 @@ import java.util.Map;
  * @author DAnomaly
  *
  */
-public class GetCaptcharImage {
+public class GetCaptchaImage {
 
  /**
   * @see getImage()
@@ -31,7 +31,7 @@ public class GetCaptcharImage {
      String clientId = NaverAPI.YOUR_CLIENT_ID; //애플리케이션 클라이언트 아이디값";
      String clientSecret = NaverAPI.YOUR_CLIENT_SECRET; //애플리케이션 클라이언트 시크릿값";
 
-     String key = GetCaptcharKey.getKey(); // https://openapi.naver.com/v1/captcha/nkey 호출로 받은 키값
+     String key = GetCaptchaKey.getKey(); // https://openapi.naver.com/v1/captcha/nkey 호출로 받은 키값
      String apiURL = "https://openapi.naver.com/v1/captcha/ncaptcha.bin?key=" + key;
 
      Map<String, String> requestHeaders = new HashMap<>();

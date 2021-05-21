@@ -26,7 +26,7 @@ public class SendCaptcharValue {
      String clientSecret = NaverAPI.YOUR_CLIENT_SECRET;//애플리케이션 클라이언트 시크릿값";
 
      String code = "1"; // 키 발급시 0,  캡차 이미지 비교시 1로 세팅
-     Map<String, String> map = GetCaptcharImage.getImage();
+     Map<String, String> map = GetCaptchaImage.getImage();
      String key = map.get("key"); // 캡차 키 발급시 받은 키값
      
      String value = JOptionPane.showInputDialog("자동가입 방지문자를 입력하세요.\n"

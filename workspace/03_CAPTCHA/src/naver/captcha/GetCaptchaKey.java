@@ -19,7 +19,7 @@ import org.json.simple.parser.ParseException;
  * 
  * @author DAnomaly
  */
-class GetCaptcharKey {
+class GetCaptchaKey {
 
 	/**
 	 * Naver Captchar의 이미지와 답을 불러오기 위한 Key값을 생성하는 Method

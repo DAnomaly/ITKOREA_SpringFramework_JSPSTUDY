@@ -3,6 +3,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import db.util.DBConnector;
 import dto.MemberDTO;
@@ -152,5 +154,59 @@ public class MemberDAO {
 		}
 		
 		return res;
+	}
+	
+	/* 6. 회원 탈퇴 */
+	public int deleteMember(long no) {
+		int res = 0;
+		
+		try {
+			if(con == null)
+				con = DBConnector.getInstance().getConnection();
+			sql = "DELETE FROM member WHERE no = ?";
+			
+			ps = con.prepareStatement(sql);
+			ps.setLong(1, no);
+			
+			res = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBConnector.close(ps, null);
+		}
+		
+		return res;
+	}
+	
+	/* 7. 회원 정보 불러오기 */
+	public List<MemberDTO> memberList() { // memberList.jsp 요청
+		List<MemberDTO> list = new ArrayList<MemberDTO>();
+		
+		try {
+			if(con == null)
+				con = DBConnector.getInstance().getConnection();
+			sql = "SELECT no, id, pw, name, email, regdate FROM member";
+			
+			ps = con.prepareStatement(sql);
+			
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				MemberDTO dto = new MemberDTO();
+				dto.setNo(rs.getLong(1));
+				dto.setId(rs.getString(2));
+				dto.setPw(rs.getString(3));
+				dto.setName(rs.getString(4));
+				dto.setEmail(rs.getString(5));
+				dto.setRegdate(rs.getDate(6));
+				list.add(dto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBConnector.close(ps, rs);
+		}
+		
+		return list;
 	}
 }

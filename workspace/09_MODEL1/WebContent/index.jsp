@@ -7,6 +7,11 @@
 	<meta charset="UTF-8">
 	<title>INDEX</title>
 	<style>
+		body {
+			width: 680px;
+			margin: 0 auto;
+		}
+	
 		a {
 			text-decoration: none;
 			color: black;
@@ -16,7 +21,7 @@
 		}
 	
 		.container {
-			width: 400px;
+			width: 500px;
 			margin: 0 auto;
 			text-align: center;
 			display: flex;
@@ -33,6 +38,12 @@
 			height: 100%;
 		}
 		
+		.admin {
+			background-color: #909090;
+		}
+		.admin a {
+			color: white;
+		}
 	</style>
 </head>
 <body>
@@ -40,7 +51,7 @@
 	
 <c:if test="${loginDTO ne null}">
 	<h3>${loginDTO.name}님 반갑습니다</h3>
-</c:if>
+</c:if>	
 
 	<div class="container">
 	
@@ -55,6 +66,9 @@
 
 <c:if test="${loginDTO ne null}">
 		<div class="btn">
+			<a href="/09_MODEL1/member/boardList.jsp">게시판</a>
+		</div>
+		<div class="btn">
 			<a href="/09_MODEL1/member/logout.jsp">로그아웃</a>
 		</div>
 		<div class="btn">
@@ -63,5 +77,15 @@
 </c:if>
 
 	</div>
+	
+<c:if test="${loginDTO.no eq 1}">
+	
+	<div class="admin">
+		<h4>관리자 페이지</h4>
+		<a href="/09_MODEL1/member/memberList.jsp">회원목록보기</a>
+	</div>
+			
+</c:if>
+
 </body>
 </html>

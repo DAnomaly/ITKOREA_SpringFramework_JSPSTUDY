@@ -42,6 +42,13 @@
 					return false;
 				}
 			});
+			
+			const leave = $('#leave_btn');
+			leave.click(function(){
+				if(confirm('정말로 탈퇴하시겠습니까?'))
+					location.href = 'leave.jsp';
+			});
+			
 		});
 	  
 	</script>
@@ -83,7 +90,11 @@
 				</tbody>
 				<tfoot>
 					<tr>
-						<th colspan="2"><input type="submit" value="회원정보수정"> <input type="button" value="뒤로가기" onclick="location.href='/09_MODEL1/'"></th>
+						<th colspan="2">
+							<input type="submit" value="회원정보수정">
+							<input type="button" value="뒤로가기" onclick="location.href='/09_MODEL1/'">
+							<input type="button" value="회원탈퇴" id="leave_btn">
+						</th>
 					</tr>
 				</tfoot>
 			</table>

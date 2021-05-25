@@ -4,17 +4,17 @@ import java.sql.Date;
 
 public class MemberDTO {
 
-	private int no;
+	private long no;
 	private String id;
 	private String pw;
 	private String name;
 	private String email;
 	private Date regdate;
 	
-	public int getNo() {
+	public long getNo() {
 		return no;
 	}
-	public void setNo(int no) {
+	public void setNo(long no) {
 		this.no = no;
 	}
 	public String getId() {

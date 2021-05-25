@@ -3,7 +3,6 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 
 import db.util.DBConnector;
 import dto.MemberDTO;
@@ -73,6 +72,85 @@ public class MemberDAO {
 		} finally {
 			DBConnector.close(ps, rs);
 		}
+		return res;
+	}
+	
+	/* 3. 로그인 */
+	public MemberDTO login(MemberDTO dto) { // login.jsp에서 받아온 dto
+		MemberDTO member = null;
+		
+		try {
+			if(con == null)
+				con = DBConnector.getInstance().getConnection();
+			sql = "SELECT no, id, pw, name, email, regdate FROM member WHERE id = ? AND pw = ? ";
+			
+			ps = con.prepareStatement(sql);
+			ps.setString(1, dto.getId());
+			ps.setString(2, dto.getPw());
+			
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				member = new MemberDTO();
+				member.setNo(rs.getLong(1));
+				member.setId(rs.getString(2));
+				member.setPw(rs.getString(3));
+				member.setName(rs.getString(4));
+				member.setEmail(rs.getString(5));
+				member.setRegdate(rs.getDate(6));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBConnector.close(ps, rs);
+		}
+		
+		return member;
+	}
+	
+	/* 4. 비밀번호 변경 */
+	public int updatePw(MemberDTO dto) { // pwChange.jsp에서 받아온 dto
+		int res = 0;
+		
+		try {
+			if(con == null)
+				con = DBConnector.getInstance().getConnection();
+			sql = "UPDATE member SET pw = ? WHERE no = ?";
+			
+			ps = con.prepareStatement(sql);
+			ps.setString(1, dto.getPw());
+			ps.setLong(2, dto.getNo());
+			
+			res = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBConnector.close(ps, null);
+		}
+		
+		return res;
+	}
+	
+	/* 5. 회원정보 변경 */
+	public int updateMyPage(MemberDTO dto) { // myChange.jsp에서 받아온 dto
+		int res = 0;
+		
+		try {
+			if(con == null)
+				con = DBConnector.getInstance().getConnection();
+			sql = "UPDATE member SET name = ? , email = ? WHERE no = ?";
+			
+			ps = con.prepareStatement(sql);
+			ps.setString(1, dto.getName());
+			ps.setString(2, dto.getEmail());
+			ps.setLong(3, dto.getNo());
+			
+			res = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBConnector.close(ps, null);
+		}
+		
 		return res;
 	}
 }

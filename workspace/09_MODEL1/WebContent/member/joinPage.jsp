@@ -97,11 +97,9 @@
 				<input type="text" name="email" id="email"><br>
 				<button>가입하기</button>
 				<input type="reset" value="입력초기화">
-				<input type="button" value="가입취소하기" id="cancel_btn">
+				<input type="button" value="가입취소하기" id="cancel_btn" onclick="location.href='/09_MODEL1/'">
 			</form>
 		</section>	
-	
-	
 	</div>
 	
 </body>

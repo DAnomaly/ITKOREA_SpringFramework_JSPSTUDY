@@ -5,7 +5,6 @@
 		response.sendRedirect("/09_MODEL1/member/loginPage.jsp");
 	}
 %>
-    
 <!DOCTYPE html>
 <html>
 <head>

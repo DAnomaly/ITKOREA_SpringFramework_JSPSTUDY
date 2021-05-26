@@ -66,7 +66,7 @@
 
 <c:if test="${loginDTO ne null}">
 		<div class="btn">
-			<a href="/09_MODEL1/member/boardList.jsp">게시판</a>
+			<a href="/09_MODEL1/board/boardList.jsp">게시판</a>
 		</div>
 		<div class="btn">
 			<a href="/09_MODEL1/member/logout.jsp">로그아웃</a>

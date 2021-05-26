@@ -1,3 +1,4 @@
+<%@page import="dto.PageVO"%>
 <%@page import="dao.BoardDAO"%>
 <%@page import="dto.BoardDTO"%>
 <%@page import="java.util.List"%>
@@ -5,12 +6,49 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
+	request.setCharacterEncoding("utf-8");
+	
+			
+
 	if(session.getAttribute("loginDTO") == null){
 		response.sendRedirect("/09_MODEL1/member/loginPage.jsp");
 	} 
 %>
 <%
-	List<BoardDTO> list = BoardDAO.getInstance().selectAll();
+	/* Paging 처리 */
+	// 1. PageVO 객체 생성
+	PageVO pageVO = new PageVO();
+	
+	// 2. 전체 레코드의 개수 구하기
+	int totalRecord = BoardDAO.getInstance().getTotalRecord();
+	pageVO.setTotalRecord(totalRecord);
+	
+	// 3. 전체 페이지의 개수 구하기
+	pageVO.setTotalPage();
+	
+	// 4. 파라미터 처리(page) 
+	if(request.getParameter("page") != null)
+		pageVO.setPage(Integer.parseInt(request.getParameter("page")));
+	
+	// 5. 현재 페이지 번호를 이용해 시작 게시글의 번호와 종료 게시글 번호
+	// BEGINRECORD
+	int beginRecord = (pageVO.getPage() - 1) * pageVO.getRecordPerPage() + 1;
+	pageVO.setBeginRecord(beginRecord);
+	// ENDRECORD
+	int endRecord = beginRecord + pageVO.getRecordPerPage() - 1;
+	if (totalRecord < endRecord)
+		endRecord = totalRecord;
+	pageVO.setEndRecord(endRecord);
+	
+	// 6. beginPage, endPage
+	int beginPage = ((pageVO.getPage() - 1) / pageVO.getPagePerBlock()) * pageVO.getPagePerBlock() + 1 ;
+	pageVO.setBeginPage(beginPage);
+	int endPage = beginPage + pageVO.getPagePerBlock() - 1;
+	if(pageVO.getTotalPage() < endPage)
+		endPage = pageVO.getTotalPage();
+	pageVO.setEndPage(endPage);
+	
+	List<BoardDTO> list = BoardDAO.getInstance().selectAll(pageVO);
 	pageContext.setAttribute("list", list);
 %>
 
@@ -46,7 +84,7 @@
 		section table a {color:black; text-decoration: none;}
 		section thead tr {background-color: gray; color: white;}
 		section thead tr th:nth-of-type(1) {width: 35px;}
-		section thead tr th:nth-of-type(2) {width: 200px;}
+		section thead tr th:nth-of-type(2) {width: 450px;}
 		section thead tr th:nth-of-type(3) {width: 85px;}
 		section thead tr th:nth-of-type(4) {width: 85px;}
 		section thead tr th:nth-of-type(5) {width: 100px;}
@@ -63,10 +101,10 @@
 			width: 400px;
 			margin: 0 auto;
 		}
-		footer > .left {
+		footer .move > .left {
 			float: left;
 		}
-		footer > .right {
+		footer .move > .right {
 			float: right;
 		}
 		footer a {
@@ -108,11 +146,16 @@
 			</table>					
 		</section>
 		<footer>
-			<div class="left">
-				<a href="/09_MODEL1/">◀ 메인 페이지로</a>
+			<div class="page">
+				
 			</div>
-			<div class="right">
-				<a href="insertPage.jsp">새글 작성 ▶</a>
+			<div class="move">
+				<div class="left">
+					<a href="/09_MODEL1/">◀ 메인 페이지로</a>
+				</div>
+				<div class="right">
+					<a href="insertPage.jsp">새글 작성 ▶</a>
+				</div>
 			</div>
 		</footer>
 	</div>

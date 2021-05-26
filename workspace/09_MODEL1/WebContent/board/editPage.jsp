@@ -66,6 +66,7 @@
 			min-height: 200px;
 			width: 680px;
 			box-sizing: border-box;
+			resize: vertical;
 		}
 		footer a {
 			color: black;
@@ -79,13 +80,31 @@
 			padding: 10px 0;
 		}
 	</style>
+	<script>
+		onload = function () {
+			const f = document.getElementById('f');
+			f.addEventListener('submit',function(event){
+				const title = document.getElementById('title');
+				const content = document.getElementById('content');
+				if(title.value == ''){
+					alert('제목은 여백일 수 없습니다.');
+					title.focus();
+					event.preventDefault();
+					return false;
+				}
+			});
+		};
+	</script>
 </head>
 <body>
+	<form id="f" action="update.jsp" method="post">
 	<header>
-		<label>제목</label> <input type="text" name="title" value="${dto.title}"/>
+		<h3>개시글 수정</h3>
+		<input type="hidden" name="idx" value="${param.idx}"/>
+		<label>제목</label> <input type="text" name="title" id="title" value="${dto.title}"/>
 	</header>
 	<section>
-		<textarea name="content">${dto.content}</textarea>
+		<textarea name="content" id="content">${dto.content}</textarea>
 	</section>
 	<footer>
 		<div class="left">
@@ -95,5 +114,6 @@
 			<input type="submit" value="수정">
 		</div>
 	</footer>
+	</form>
 </body>
 </html>

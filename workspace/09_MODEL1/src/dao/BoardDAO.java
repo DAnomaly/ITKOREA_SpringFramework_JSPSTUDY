@@ -8,6 +8,7 @@ import java.util.List;
 
 import db.util.DBConnector;
 import dto.BoardDTO;
+import dto.PageVO;
 
 public class BoardDAO {
 
@@ -52,12 +53,19 @@ public class BoardDAO {
 	}
 	
 	/* 2. 개시글 리스트 */
-	public List<BoardDTO> selectAll(){ // boardList.jsp
+	public List<BoardDTO> selectAll(PageVO vo){ // boardList.jsp
 		List<BoardDTO> list = new ArrayList<BoardDTO>();
 		
 		try {
-			sql = "SELECT idx, author, title, content, hit, postdate FROM board ORDER BY postdate DESC";
+			sql = "SELECT b.idx, b.author, b.title, b.content, b.hit, b.postdate " + 
+				  "  FROM ( SELECT ROWNUM AS record, a.idx, a.author, a.title, a.content, a.hit, a.postdate " + 
+				  "           FROM ( SELECT idx, author, title, content, hit, postdate " + 
+				  "                    FROM board" + 
+				  "                   ORDER BY idx DESC ) a ) b " + 
+				  " WHERE b.record BETWEEN ? AND ?";
 			ps = con.prepareStatement(sql);
+			ps.setInt(1, vo.getBeginRecord());
+			ps.setInt(2, vo.getEndRecord());
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				BoardDTO dto = new BoardDTO();
@@ -116,12 +124,12 @@ public class BoardDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DBConnector.close(ps, rs);
+			DBConnector.close(ps, null);
 		}
 	}
 	
-	/* 5. 게시글 삭제*/
-	public int deleteBoard(long idx, String id) {
+	/* 5. 게시글 삭제 */
+	public int deleteBoard(long idx, String id) { // delete.jsp
 		int res = 0;
 		
 		try {
@@ -134,10 +142,50 @@ public class BoardDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DBConnector.close(ps, rs);
+			DBConnector.close(ps, null);
 		}
 		
 		return res;
+	}
+	
+	/* 6. 개시글 수정 */
+	public int updateBoard(BoardDTO dto) { // update.jsp
+		int res = 0;
+		try {
+			sql = "UPDATE board SET title = ?, content = ?, postdate = sysdate WHERE idx = ? AND author = ?";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, dto.getTitle());
+			ps.setString(2, dto.getContent());
+			ps.setLong(3, dto.getIdx());
+			ps.setString(4, dto.getAuthor());
+			
+			res = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBConnector.close(ps, null);
+		}
+		return res;
+	}
+	
+	/* 7. 전체 개시글의 개수 반환 */
+	public int getTotalRecord() { // boardList.jsp
+		int cnt = 0;
+		try {
+			sql = "SELECT COUNT(idx) FROM board";
+			ps = con.prepareStatement(sql);
+			
+			rs = ps.executeQuery();
+			if(rs.next())
+				cnt = rs.getInt(1);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBConnector.close(ps, rs);
+		}
+		
+		return cnt;
 	}
 	
 }

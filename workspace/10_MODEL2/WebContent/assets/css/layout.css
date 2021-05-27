@@ -1,0 +1,67 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&family=Noto+Sans+KR&display=swap');
+/* font-family: 'Do Hyeon','Jua','Noto Sans KR', sans-serif; */
+/* 초기화 */
+* {
+	padding: 0;
+	margin : 0;
+}
+body {
+	font-family: 'Noto Sans KR', sans-serif;
+}
+a {
+	text-decoration: none;
+	color: #304030;
+}
+li {
+	list-style: none;
+}
+.container {
+	width: 1080px;
+	margin: 0 auto;
+}
+
+/* header.main */
+header.main {
+	border-bottom: 1px solid #304030;
+}
+header.main > a {
+	outline: none;
+}
+header.main > a img {
+	height: 200px;
+}
+header.main nav {
+	padding-top: 150px;
+	float: right;
+}
+header.main nav ul {
+	display: flex;
+}
+header.main nav ul li a {
+	font-family: 'Do Hyeon';
+	display: inline-block;
+	color: #304030;
+	padding: 5px 10px;
+	margin: 0 5px;
+}
+header.main nav ul li a:hover {
+	border-bottom: 2px solid #2E64FE;
+	color: #2E64FE;
+}
+
+/* section.main */
+section.main {
+	padding: 20px;
+	min-height: 600px;
+}
+
+/* footer.main */
+footer.main {
+	padding-top: 10px;
+	border-top: 1px solid #304030;
+}
+footer.main p {
+	font-family: 'Do Hyeon';
+	color: #708090;
+}

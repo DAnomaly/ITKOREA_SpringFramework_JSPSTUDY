@@ -48,6 +48,8 @@
 		endPage = pageVO.getTotalPage();
 	pageVO.setEndPage(endPage);
 	
+	pageContext.setAttribute("pageVO", pageVO);
+	
 	List<BoardDTO> list = BoardDAO.getInstance().selectAll(pageVO);
 	pageContext.setAttribute("list", list);
 %>
@@ -101,17 +103,31 @@
 			width: 400px;
 			margin: 0 auto;
 		}
+		footer .paging {
+			text-align: center;		
+		}
+		footer .paging, footer .paging a{
+			color: black;
+			text-decoration: none;
+		}
+		footer .paging .not_a {
+			color: gray;
+		}
+		footer .paging .now_page {
+			color: blue;
+			font-weight: bold;		
+		}
 		footer .move > .left {
 			float: left;
 		}
 		footer .move > .right {
 			float: right;
 		}
-		footer a {
+		footer .move a {
 			text-decoration: none;
 			color: black;
 		}
-		footer a:hover {
+		footer .move a:hover {
 			color: purple;
 		}
 	</style>
@@ -146,8 +162,30 @@
 			</table>					
 		</section>
 		<footer>
-			<div class="page">
-				
+			<div class="paging">
+				<%-- 1. 이전 블록으로 이동 --%>
+<c:if test="${pageVO.beginPage - pageVO.pagePerBlock lt 0}">
+				<span class="not_a page_block">&lt;이전</span>&nbsp;
+</c:if>
+<c:if test="${pageVO.beginPage - pageVO.pagePerBlock ge 0}">
+				<a href="boardList.jsp?page=${pageVO.beginPage - 1}">&lt;이전</a>&nbsp;
+</c:if>
+				<%-- 2. 페이지 번호 --%>
+<c:forEach begin="${pageVO.beginPage}" end="${pageVO.endPage}" var="num">
+	<c:if test="${num - pageVO.page eq 0}">
+				<span class="now_page">${num}</span>
+	</c:if>
+	<c:if test="${num - pageVO.page ne 0}">
+				<a href="boardList.jsp?page=${num}">${num}</a>
+	</c:if>
+</c:forEach>
+				<%-- 3. 다음 블록으로 이동 --%>
+<c:if test="${pageVO.endPage - pageVO.totalPage eq 0}">
+				&nbsp;<span class="not_a page_block">다음&gt;</span>
+</c:if>
+<c:if test="${pageVO.endPage - pageVO.totalPage ne 0}">
+				&nbsp;<a href="boardList.jsp?page=${pageVO.endPage + 1}">다음&gt;</a>
+</c:if>
 			</div>
 			<div class="move">
 				<div class="left">

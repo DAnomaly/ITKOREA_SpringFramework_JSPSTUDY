@@ -1,5 +1,6 @@
 package controller;
 
+import command.member.DeleteMemberCommand;
 import command.member.JoinCommand;
 import command.member.JoinPageCommand;
 import command.member.LoginCommand;
@@ -11,13 +12,13 @@ import command.member.UpdateMemberCommand;
 import command.member.UpdatePwCommand;
 import command.member.UpdatePwPageCommand;
 
-public class CommandMapper {
+public class MemberCommandMapper {
 
-	private static CommandMapper instance = new CommandMapper();
-	private CommandMapper() {}
-	public static CommandMapper getInstance() {
+	private static MemberCommandMapper instance = new MemberCommandMapper();
+	private MemberCommandMapper() {}
+	public static MemberCommandMapper getInstance() {
 		if (instance == null) {
-			instance = new CommandMapper();
+			instance = new MemberCommandMapper();
 		}
 		return instance;
 	}
@@ -54,6 +55,9 @@ public class CommandMapper {
 			break;
 		case "updateMember.m":
 			command = new UpdateMemberCommand();
+			break;
+		case "deleteMember.m":
+			command = new DeleteMemberCommand();
 			break;
 		}
 		return command;

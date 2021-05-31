@@ -3,13 +3,14 @@ package dto;
 import java.sql.Date;
 
 public class ReplyDTO {
+
 	private long idx;
 	private String author;
 	private String content;
 	private String ip;
 	private long boardIdx;
 	private Date postdate;
-	
+
 	public long getIdx() {
 		return idx;
 	}

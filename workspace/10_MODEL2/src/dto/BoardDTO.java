@@ -3,7 +3,7 @@ package dto;
 import java.sql.Date;
 
 public class BoardDTO {
-	
+
 	private long idx;
 	private String author;
 	private String title;

@@ -1,14 +1,16 @@
 <%@page import="java.util.Optional"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="UTF-8">
 	<%
 		request.setCharacterEncoding("utf-8");
-		Optional<String> opt = Optional.ofNullable((String)request.getParameter("title"));
-		pageContext.setAttribute("title", opt.orElse("환영합니다"));
+		Optional<String> opt = Optional.ofNullable(request.getParameter("title"));
+		String title = opt.orElse("환영합니다");
+		pageContext.setAttribute("title", title);
 	%>
 	<title>${title}</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" referrerpolicy="no-referrer" />
@@ -23,9 +25,15 @@
 			</a>
 			<nav>
 				<ul>
-					<li><a href="#">회원가입</a></li>
-					<li><a href="#">로그인</a></li>
-					<li><a href="#">마이페이지</a></li>
+					<c:if test="${loginDTO == null}">
+						<li><a href="/10_MODEL2/joinPage.m">회원가입</a></li>
+						<li><a href="/10_MODEL2/loginPage.m">로그인</a></li>
+						<li><a href="/10_MODEL2/loginPage.m">마이페이지</a></li>
+					</c:if>
+					<c:if test="${loginDTO != null}">
+						<li><a href="/10_MODEL2/logout.m">로그아웃</a></li>
+						<li><a href="/10_MODEL2/myPage.m">마이페이지</a></li>
+					</c:if>
 				</ul>
 			</nav>
 		</header>

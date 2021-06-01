@@ -1,5 +1,6 @@
 package dao;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -126,6 +127,181 @@ public class BoardDAO {
 			close(con, ps, rs);
 		}
 		return list;
+	}
+	
+	/* 5. 개시글 반환 */
+	public BoardDTO selectOneBoardByIdx(long idx) {
+		BoardDTO dto = null;
+		try {
+			con = dataSource.getConnection();
+			sql = "SELECT IDX, AUTHOR, TITLE, CONTENT, HIT, IP, FILENAME, STATE, POSTDATE, LASTMODIFIED"
+			    + "  FROM BOARD"
+				+ " WHERE IDX = ?";
+			ps = con.prepareStatement(sql);
+			ps.setLong(1, idx);
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				dto = new BoardDTO();
+				dto.setIdx(rs.getLong(1));
+				dto.setAuthor(rs.getString(2));
+				dto.setTitle(rs.getString(3));
+				dto.setContent(rs.getString(4));
+				dto.setHit(rs.getInt(5));
+				dto.setIp(rs.getString(6));
+				dto.setFilename(rs.getString(7));
+				dto.setState(rs.getInt(8));
+				dto.setPostdate(rs.getDate(9));
+				dto.setLastmodified(rs.getDate(10));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, rs);
+		}
+		return dto;
+	}
+
+	/* 6. 조회수 증가 */
+	public void updateHitBoard(long idx) {
+		try {
+			con = dataSource.getConnection();
+			sql = "UPDATE BOARD SET HIT = HIT + 1 WHERE IDX = ?";
+			ps = con.prepareStatement(sql);
+			ps.setLong(1, idx);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, null);
+		}
+	}
+	
+	/* 7. 검색 결과 개수 반환하기 */
+	public int getFindBoardCount(Map<String, Object> map) {
+		int count = 0;
+		try {
+			con = dataSource.getConnection();
+			String column = (String)map.get("column");
+			sql = "SELECT COUNT(IDX) FROM BOARD WHERE " + column + " LIKE ? ";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, (String)map.get("query"));
+			rs = ps.executeQuery();
+			if(rs.next())
+				count = rs.getInt(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, rs);
+		}
+		return count;
+	}
+
+	/* 8. 검색 게시글 목록 반환 */
+	public List<BoardDTO> findList(Map<String, Object> map) {
+		List<BoardDTO> list = new ArrayList<BoardDTO>();
+		try {
+			con = dataSource.getConnection();
+			String column = (String)map.get("column");
+			sql = "SELECT B.IDX, B.AUTHOR, B.TITLE, B.CONTENT, B.HIT, B.IP, B.FILENAME, B.STATE, B.POSTDATE, B.LASTMODIFIED " + 
+				"    FROM (SELECT ROWNUM AS RN, A.IDX, A.AUTHOR, A.TITLE, A.CONTENT, A.HIT, A.IP, A.FILENAME, A.STATE, A.POSTDATE, A.LASTMODIFIED " + 
+				"            FROM (SELECT IDX, AUTHOR, TITLE, CONTENT, HIT, IP, FILENAME, STATE, POSTDATE, LASTMODIFIED " + 
+				"                    FROM BOARD" + 
+				"                   WHERE " + column + " LIKE ? " +
+				"                   ORDER BY POSTDATE DESC) A) B" + 
+				"   WHERE B.RN BETWEEN ? AND ?";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, (String)map.get("query"));
+			ps.setInt(2, (int)map.get("begin"));
+			ps.setInt(3, (int)map.get("end"));
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				BoardDTO dto = new BoardDTO();
+				dto.setIdx(rs.getLong(1));
+				dto.setAuthor(rs.getString(2));
+				dto.setTitle(rs.getString(3));
+				dto.setContent(rs.getString(4));
+				dto.setHit(rs.getInt(5));
+				dto.setIp(rs.getString(6));
+				dto.setFilename(rs.getString(7));
+				dto.setState(rs.getInt(8));
+				dto.setPostdate(rs.getDate(9));
+				dto.setLastmodified(rs.getDate(10));
+				list.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, rs);
+		}
+		return list;
+	}
+	
+	/* 9. 보드 삭제 처리 (UPDATE STATE = -1) */
+	public int deleteBoard(long idx, String author) {
+		int result = 0;
+		try {
+			con = dataSource.getConnection();
+			sql = "UPDATE BOARD SET STATE = -1 WHERE IDX = ? AND AUTHOR = ?";
+			ps = con.prepareStatement(sql);
+			ps.setLong(1, idx);
+			ps.setString(2, author);
+			result = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, null);
+		}
+		return result;
+	}
+	
+	/* 10. 보드 수정 */
+	public int updateBoard(BoardDTO dto) {
+		int result = 0;
+		try {
+			con = dataSource.getConnection();
+			if(dto.getFilename() == null || dto.getFilename().isEmpty()) {
+				sql = "UPDATE BOARD SET TITLE = ?, CONTENT = ?, IP = ?, LASTMODIFIED = SYSDATE WHERE IDX = ? AND AUTHOR = ?";
+				ps = con.prepareStatement(sql);
+				ps.setString(1, dto.getTitle());
+				ps.setString(2, dto.getContent());
+				ps.setString(3, dto.getIp());
+				ps.setLong(4, dto.getIdx());
+				ps.setString(5, dto.getAuthor());
+			} else {
+				sql = "UPDATE BOARD SET TITLE = ?, CONTENT = ?, FILENAME = ?, IP = ?, LASTMODIFIED = SYSDATE WHERE IDX = ? AND AUTHOR = ?";
+				ps = con.prepareStatement(sql);
+				ps.setString(1, dto.getTitle());
+				ps.setString(2, dto.getContent());
+				ps.setString(3, dto.getFilename());
+				ps.setString(4, dto.getIp());
+				ps.setLong(5, dto.getIdx());
+				ps.setString(6, dto.getAuthor());
+			}
+			result = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, null);
+		}
+		return result;
+	}
+	
+	/* 11. 파일삭제 */
+	public int deleteFile(long idx, String author) {
+		int result = 0;
+		try {
+			con = dataSource.getConnection();
+			sql = "UPDATE BOARD SET FILENAME = NULL WHERE IDX = ? AND AUTHOR = ?";
+			ps = con.prepareStatement(sql);
+			ps.setLong(1, idx);
+			ps.setString(2, author);
+			result = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, null);
+		}
+		return result;
 	}
 	
 }

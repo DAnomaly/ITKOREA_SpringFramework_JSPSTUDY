@@ -14,11 +14,10 @@ import common.ModelAndView;
 import dao.BoardDAO;
 import dto.BoardDTO;
 
-public class InsertBoardCommand implements BoardCommand {
+public class EditBoardCommand implements BoardCommand {
 
 	@Override
 	public ModelAndView execute(HttpServletRequest request, HttpServletResponse response) {
-
 		final String DIRECTORY = "archive";
 		String realPath = request.getServletContext().getRealPath(DIRECTORY);
 		File dir = new File(realPath);
@@ -27,44 +26,45 @@ public class InsertBoardCommand implements BoardCommand {
 		MultipartRequest multipartRequest = null;
 		BoardDTO dto = null;
 		try {
-			// 업로드 진행
-			multipartRequest = new MultipartRequest(request, realPath, 1024 * 1024 * 10, "utf-8",
-					new DefaultFileRenamePolicy());
-			// 파라미터 처리 : MultipartRequest가 담당
+			multipartRequest = new MultipartRequest(request, realPath, 1024 * 1024 * 10, "UTF-8", new DefaultFileRenamePolicy());
+			// 파라미터 처리
+			// 파일 검사
+			long idx = Long.parseLong(multipartRequest.getParameter("idx"));
 			String author = multipartRequest.getParameter("author");
+			// 수정된 파라미터
 			String title = multipartRequest.getParameter("title");
 			String content = multipartRequest.getParameter("content");
+			String filename = multipartRequest.getFilesystemName("filename");
 			String ip = multipartRequest.getParameter("ip");
-			String filename = null;
-			if (multipartRequest.getFile("filename") == null) {
-				filename = "";
-			} else {
-				filename = multipartRequest.getFilesystemName("filename");
-			}
+			// dto 생성
 			dto = new BoardDTO();
-			dto.setAuthor(author);
+			dto.setIdx(idx);
 			dto.setTitle(title);
 			dto.setContent(content);
 			dto.setIp(ip);
 			dto.setFilename(filename);
-		} catch (IOException e) {
+			dto.setAuthor(author);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		int result = BoardDAO.getInstance().insertBoard(dto);
+		// DB 호출
+		int result = BoardDAO.getInstance().updateBoard(dto); 
 		ModelAndView mav = null;
-		if (result > 0) {
-			mav = new ModelAndView("/10_MODEL2/listBoardPage.b",true);
+		if(result > 0) {
+			mav = new ModelAndView("viewBoardPage.b?idx=" + dto.getIdx(), true);
 		} else {
 			try {
 				PrintWriter out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('게시글이 저장되지 않았습니다.');");
-				out.println("histroy.back();");
+				out.println("alert('게시글 수정중 오류가 발생했습니다.');");
+				out.println("history.back();");
 				out.println("</script>");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		
+		
 		return mav;
 	}
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- namespace는 mapper의 전체경로(패키지 포함)를 작성한다. -->
+<mapper namespace="mybatis.mapper.board">
+	
+	<insert id="insertBoard" parameterType="dto.BoardDTO">
+		INSERT INTO BOARD VALUES (
+			BOARD_SEQ.NEXTVAL, 
+			#{author}, 
+			#{title}, 
+			#{content}, 
+			#{ip}, 
+			0, 
+			SYSDATE, 
+			SYSDATE, 
+			0, 
+			BOARD_SEQ.CURRVAL, 
+			0, 
+			0
+		)
+	</insert>
+
+	<select id="getTotalRecord" resultType="int">
+		SELECT COUNT(NO)
+		  FROM BOARD
+	</select>
+
+	<select id="selectList" parameterType="java.util.Map" resultType="dto.BoardDTO">
+		SELECT B.NO, B.AUTHOR, B.TITLE, B.CONTENT, B.IP, B.HIT, B.POSTDATE, B.LASTMODIFIED, B.STATE, B.GROUPNO, B.GROUPORD, B.DEPTH
+		  FROM (
+				SELECT ROWNUM AS RN ,A.NO, A.AUTHOR, A.TITLE, A.CONTENT, A.IP, A.HIT, A.POSTDATE, A.LASTMODIFIED, A.STATE, A.GROUPNO, A.GROUPORD, A.DEPTH
+				  FROM (
+						SELECT NO, AUTHOR, TITLE, CONTENT, IP, HIT, POSTDATE, LASTMODIFIED, STATE, GROUPNO, GROUPORD, DEPTH
+						  FROM BOARD
+						 ORDER BY NO DESC ) A ) B
+		 WHERE B.RN BETWEEN #{beginRecord} AND #{endRecord}
+	</select>
+
+</mapper>

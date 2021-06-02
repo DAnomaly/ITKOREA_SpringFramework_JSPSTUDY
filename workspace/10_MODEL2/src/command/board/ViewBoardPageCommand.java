@@ -1,11 +1,14 @@
 package command.board;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import common.ModelAndView;
 import dao.BoardDAO;
 import dto.BoardDTO;
+import dto.ReplyDTO;
 
 public class ViewBoardPageCommand implements BoardCommand{
 
@@ -21,6 +24,12 @@ public class ViewBoardPageCommand implements BoardCommand{
 			request.getSession().setAttribute("hit", idx);
 			BoardDAO.getInstance().updateHitBoard(idx);
 		}
+		// 댓글의 개수 구하기
+		int replyCount = BoardDAO.getInstance().getReplyCount(idx);
+		request.setAttribute("replyCnt", replyCount);
+		// 댓글 조회
+		List<ReplyDTO> list = BoardDAO.getInstance().selectListReply(idx);
+		request.setAttribute("replyList", list);
 		// 게시글이 존재하던 목록의 주소
 		int totalRecord = BoardDAO.getInstance().getTotalBoardCount();
 		int recordPerPage = 5;

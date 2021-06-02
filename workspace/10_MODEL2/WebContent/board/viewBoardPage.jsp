@@ -63,11 +63,87 @@
 	form {
 		display: inline-block;
 	}
+	#reply {
+		display: block;
+		width: 100%;
+		height: 80px;
+	}
+	.write_reply textarea {
+		width: 80%;
+		height: 60px;
+		margin: 5px;
+		padding: 5px;
+		box-sizing: border-box;
+		float: left;
+		resize: none;
+	}
+	.write_reply #rep_btn {
+		width: 65px;
+		height: 60px;
+		box-sizing: border-box;
+		margin-top: 5px;
+		margin-left: 10px;
+		float: left;
+	}
+	.replies .rep_box {
+		width: 80%;
+		height: 100px;
+		padding: 5px;
+		margin: 5px;
+		margin-top: 10px;
+		box-sizing: border-box;
+		background-color: #909090;
+		border-radius: 5px;
+	}
+	.replies .rep_author {
+		margin-left: 15px;
+		color: white;
+		font-weight: bold;
+	}
+	.replies .date {
+		color: #d0d0d0;
+		font-size: 12px;
+		font-weight: lighter;
+	}
+	.replies .rep_del {
+		color: #d0d0d0;
+		font-weight: lighter;
+		margin-left: 15px;
+	}
+	.replies .rep_del:hover {
+		color: #DF013A;
+		cursor: pointer;
+	}
+	.replies .rep_content pre{
+		width: 95%;
+		height: 55px;
+		background-color: #fff;
+		margin-left: 5px;
+		padding: 5px;
+		box-sizing: border-box;
+		border-radius: 3px;
+	}
+	
+	
 </style>
 <script>
 	function del_f(){
 		if(confirm('삭제하시겠습니까?')){
 			location.href="/10_MODEL2/deleteBoard.b?idx=${dto.idx}";
+		}
+	}
+	function reply_f(){
+		const reply = $('#reply');
+		const rep_content = $('#rep_content');
+		if(rep_content.val() == ''){
+			alert('뎃글을 입력해 주세요.');
+			return;
+		}
+		reply.submit();
+	}
+	function rep_del_f(idx,boardIdx){
+		if(confirm('정말로 삭제 하시겠습니까?')){
+			location.href = '/10_MODEL2/deleteReply.b?idx=' + idx +'&boardIdx=' + boardIdx;
 		}
 	}
 </script>
@@ -95,7 +171,42 @@
 			<pre id="content" class="content">${dto.content}</pre><br><br>
 		</div>
 	</div>
-		<div>
+	<div class="reply">
+		<span>댓글 개수: ${replyCnt}</span>
+		<div class="write_reply">
+			<form action="insertReply.b" id="reply" method="post">
+			<c:if test="${empty loginDTO}">
+				<textarea name="content" id="rep_content" placeholder="로그인 후에 작성하실 수 있습니다." disabled></textarea>
+				<input type="button" id="rep_btn" value="작성하기" disabled/>
+			</c:if>
+			<c:if test="${not empty loginDTO}">
+				<input type="hidden" name="boardIdx" value="${dto.idx}"/>
+				<textarea name="content" id="rep_content" placeholder="소중한 댓글을 작성해 주세요."></textarea>
+				<input type="button" id="rep_btn" value="작성하기" onclick="reply_f()"/>
+			</c:if>
+			</form>
+		</div>
+		<div class="replies">
+			<ul>
+			<c:forEach items="${replyList}" var="rep">
+				<li class="rep_box">
+					<ul>
+						<li class="rep_author">
+							${rep.author} <span class="date">${rep.postdate}</span>
+							<c:if test="${loginDTO.id == rep.author}">
+								<span class="rep_del" id="rep_del" onclick="rep_del_f(${rep.idx},${dto.idx})">삭제</span>
+							</c:if>
+						</li>
+						<li class="rep_content">
+							<pre>${rep.content}</pre>
+						</li>
+					</ul>
+				</li>
+			</c:forEach>
+			</ul>
+		</div>
+	</div>
+	<div>
 		<input type="button" value="목록보기" id="list_btn" class="btn" onclick="location.href='http://localhost:9090/10_MODEL2/listBoardPage.b?${referer}'"/>
 	<c:if test="${dto.author == loginDTO.id}">
 		<form action="/10_MODEL2/editBoardPage.b" method="post">

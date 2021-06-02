@@ -1,6 +1,5 @@
 package dao;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +13,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import dto.BoardDTO;
+import dto.ReplyDTO;
 
 public class BoardDAO {
 
@@ -304,4 +304,88 @@ public class BoardDAO {
 		return result;
 	}
 	
+	
+	/* 12. 뎃글 작성 */
+	public int insertReply(ReplyDTO dto) {
+		int result = 0;
+		try {
+			con = dataSource.getConnection();
+			sql = "INSERT INTO REPLY VALUES (REPLY_SEQ.NEXTVAL, ?, ?, ?, ?, SYSDATE)";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, dto.getAuthor());
+			ps.setString(2, dto.getContent());
+			ps.setString(3, dto.getIp());
+			ps.setLong(4, dto.getBoardIdx());
+			result = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, null);
+		}
+		return result;
+	}
+	
+	/* 13. 댓글 개수 확인 */
+	public int getReplyCount(long boardIdx) {
+		int cnt = 0;
+		try {
+			con = dataSource.getConnection();
+			sql = "SELECT COUNT(IDX) FROM REPLY WHERE BOARD_IDX = ?";
+			ps = con.prepareStatement(sql);
+			ps.setLong(1, boardIdx);
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				cnt = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, rs);
+		}
+		return cnt;
+	}
+	
+	/* 14. 댓글 불러오기 */
+	public List<ReplyDTO> selectListReply(long boardIdx) {
+		List<ReplyDTO> list = new ArrayList<ReplyDTO>();
+		try {
+			con = dataSource.getConnection();
+			sql = "SELECT IDX, AUTHOR, CONTENT, IP, BOARD_IDX, POSTDATE FROM REPLY WHERE BOARD_IDX = ? ORDER BY IDX DESC";
+			ps = con.prepareStatement(sql);
+			ps.setLong(1, boardIdx);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				ReplyDTO dto = new ReplyDTO();
+				dto.setIdx(rs.getLong(1));
+				dto.setAuthor(rs.getString(2));
+				dto.setContent(rs.getString(3));
+				dto.setIp(rs.getString(4));
+				dto.setBoardIdx(rs.getLong(5));
+				dto.setPostdate(rs.getDate(6));
+				list.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, rs);
+		}
+		return list;
+	}
+	
+	/* 15. 댓글 삭제하기 */
+	public int deleteReply(long idx) {
+		int result = 0;
+		try {
+			con = dataSource.getConnection();
+			sql = "DELETE FROM REPLY WHERE IDX = ?";
+			ps = con.prepareStatement(sql);
+			ps.setLong(1, idx);
+			result = ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, null);
+		}
+		return result;
+	}
 }

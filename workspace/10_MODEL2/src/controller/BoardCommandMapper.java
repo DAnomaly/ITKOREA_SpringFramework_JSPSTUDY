@@ -3,11 +3,13 @@ package controller;
 import command.board.BoardCommand;
 import command.board.DeleteBoardCommand;
 import command.board.DeleteFileBoardCommand;
+import command.board.DeleteReplyBoardCommand;
 import command.board.EditBoardCommand;
 import command.board.EditBoardPageCommand;
 import command.board.FindBoardCommand;
 import command.board.InsertBoardCommand;
 import command.board.InsertBoardPageCommand;
+import command.board.InsertReplyBoardCommand;
 import command.board.ListBoardPageCommand;
 import command.board.ViewBoardPageCommand;
 
@@ -52,6 +54,12 @@ public class BoardCommandMapper {
 			break;
 		case "deleteFileBoard.b":
 			command = new DeleteFileBoardCommand();
+			break;
+		case "insertReply.b":
+			command = new InsertReplyBoardCommand();
+			break;
+		case "deleteReply.b":
+			command = new DeleteReplyBoardCommand();
 			break;
 		}
 		return command;

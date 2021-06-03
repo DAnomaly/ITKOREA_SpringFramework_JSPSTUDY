@@ -28,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  FROM BOARD
 	</select>
 
+	<!-- 1단 댓글만 허용하는 게시판의 정렬 -->
 	<select id="selectList" parameterType="java.util.Map" resultType="dto.BoardDTO">
 		SELECT B.NO, B.AUTHOR, B.TITLE, B.CONTENT, B.IP, B.HIT, B.POSTDATE, B.LASTMODIFIED, B.STATE, B.GROUPNO, B.GROUPORD, B.DEPTH
 		  FROM (
@@ -35,8 +36,107 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				  FROM (
 						SELECT NO, AUTHOR, TITLE, CONTENT, IP, HIT, POSTDATE, LASTMODIFIED, STATE, GROUPNO, GROUPORD, DEPTH
 						  FROM BOARD
-						 ORDER BY NO DESC ) A ) B
+						 ORDER BY GROUPNO DESC, DEPTH ASC, GROUPORD DESC) A ) B
 		 WHERE B.RN BETWEEN #{beginRecord} AND #{endRecord}
 	</select>
 
+	<update id="increaseGroupordPreviousReply" parameterType="long">
+		UPDATE BOARD 
+		   SET GROUPORD = GROUPORD + 1 
+		 WHERE GROUPNO = ${groupno} 
+		   AND DEPTH = 1
+	</update>
+	
+	<insert id="insertReply" parameterType="dto.BoardDTO">
+		INSERT INTO BOARD VALUES (
+			BOARD_SEQ.NEXTVAL, 
+			#{author}, 
+			#{title}, 
+			#{content}, 
+			#{ip}, 
+			0, 
+			SYSDATE, 
+			SYSDATE, 
+			0, 
+			#{groupno}, 
+			#{groupord}, 
+			#{depth}
+		)
+	</insert>
+	
+	<select id="findTotalRecord" resultType="int" parameterType="java.util.Map">
+		SELECT COUNT(NO)
+		  FROM BOARD
+		 WHERE STATE = 0
+		 	<if test="'BOTH' == column">
+		   AND TITLE LIKE #{query}
+		 	OR AUTHOR LIKE #{query}
+		 	</if>
+		 	<if test="'BOTH' != column">
+	 	   AND ${column} LIKE #{query}
+		 	</if>
+	</select>
+	
+	<select id="findList" resultType="dto.BoardDTO"  parameterType="java.util.Map">
+		SELECT B.NO, B.AUTHOR, B.TITLE, B.CONTENT, B.IP, B.HIT, B.POSTDATE, B.LASTMODIFIED, B.STATE, B.GROUPNO, B.GROUPORD, B.DEPTH
+		  FROM (
+				SELECT ROWNUM AS RN ,A.NO, A.AUTHOR, A.TITLE, A.CONTENT, A.IP, A.HIT, A.POSTDATE, A.LASTMODIFIED, A.STATE, A.GROUPNO, A.GROUPORD, A.DEPTH
+				  FROM (
+						SELECT NO, AUTHOR, TITLE, CONTENT, IP, HIT, POSTDATE, LASTMODIFIED, STATE, GROUPNO, GROUPORD, DEPTH
+						  FROM BOARD
+						 WHERE STATE = 0
+						 	<if test="'BOTH' == column">
+						   AND TITLE LIKE #{query}
+						 	OR AUTHOR LIKE #{query}
+						 	</if>
+						 	<if test="'BOTH' != column">
+					 	   AND ${column} LIKE #{query}
+						 	</if>
+						 ORDER BY GROUPNO DESC, DEPTH ASC, GROUPORD DESC) A ) B
+		 WHERE B.RN BETWEEN #{beginRecord} AND #{endRecord}
+	</select>
+	
+	<update id="delete" parameterType="long">
+		UPDATE BOARD 
+		   SET STATE = -1 
+		 WHERE NO = #{no} 
+	</update>
+	
+	
+	<!-- 대댓글이 되는 게시판의 정렬 -->
+	<select id="selectList3" parameterType="java.util.Map" resultType="dto.BoardDTO">
+		SELECT B.NO, B.AUTHOR, B.TITLE, B.CONTENT, B.IP, B.HIT, B.POSTDATE, B.LASTMODIFIED, B.STATE, B.GROUPNO, B.GROUPORD, B.DEPTH
+		  FROM (
+				SELECT ROWNUM AS RN ,A.NO, A.AUTHOR, A.TITLE, A.CONTENT, A.IP, A.HIT, A.POSTDATE, A.LASTMODIFIED, A.STATE, A.GROUPNO, A.GROUPORD, A.DEPTH
+				  FROM (
+						SELECT NO, AUTHOR, TITLE, CONTENT, IP, HIT, POSTDATE, LASTMODIFIED, STATE, GROUPNO, GROUPORD, DEPTH
+						  FROM BOARD
+						 ORDER BY GROUPNO DESC, GROUPORD ASC) A ) B
+		 WHERE B.RN BETWEEN #{beginRecord} AND #{endRecord}
+	</select>
+	
+	<update id="increaseGroupordPreviousReply3" parameterType="dto.BoardDTO">
+		UPDATE BOARD 
+		   SET GROUPORD = GROUPORD + 1 
+		 WHERE GROUPNO = #{groupno} 
+		   AND GROUPORD >= #{groupord}
+	</update>
+	
+	<insert id="insertReply3" parameterType="dto.BoardDTO">
+		INSERT INTO BOARD VALUES (
+			BOARD_SEQ.NEXTVAL, 
+			#{author}, 
+			#{title}, 
+			#{content}, 
+			#{ip}, 
+			0, 
+			SYSDATE, 
+			SYSDATE, 
+			0, 
+			#{groupno}, 
+			#{groupord}, 
+			#{depth}
+		)
+	</insert>
+	
 </mapper>

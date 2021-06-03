@@ -12,11 +12,26 @@
 	<a href="/11_MYBATIS/insertPage.do">새글작성</a><br><br>
 	<form action="/11_MYBATIS/findList.do">
 		<select name="column">
+		<c:if test="${param.column eq 'TITLE'}">
+			<option value="TITLE" selected>제목</option>
+		</c:if>
+		<c:if test="${param.column ne 'TITLE'}">
 			<option value="TITLE">제목</option>
+		</c:if>
+		<c:if test="${param.column eq 'AUTHOR'}">
+			<option value="AUTHOR" selected>작성자</option>
+		</c:if>
+		<c:if test="${param.column ne 'AUTHOR'}">
 			<option value="AUTHOR">작성자</option>
+		</c:if>
+		<c:if test="${param.column eq 'BOTH'}">
+			<option value="BOTH" selected>제목/작성자</option>
+		</c:if>
+		<c:if test="${param.column ne 'BOTH'}">
 			<option value="BOTH">제목/작성자</option>
+		</c:if>
 		</select>
-		<input type="text" name="query">
+		<input type="text" name="query" value="${param.query}">
 		<input type="submit" value="검색">
 		<a href="/11_MYBATIS/selectListBoard.do"><i class="fas fa-sync-alt"></i></a>
 	</form>
@@ -34,18 +49,13 @@
 		<tbody>
 		<c:if test="${empty list}">
 			<tr>
-				<td colspan="5">작성된 게시글이 없습니다.</td>
+				<td colspan="5">개시글을 찾지 못하였습니다.</td>
 			</tr>
 		</c:if>
 		<c:forEach items="${list}" var="dto" varStatus="k">
 			<tr>
 				<td>${seq - k.index}</td>
-			<c:if test="${dto.depth eq 0}">
-				<td>${dto.title}&nbsp;<a href="./insertReplyPage.do?no=${dto.no}">답글</a></td>
-			</c:if>
-			<c:if test="${dto.depth ne 0}">
-				<td>&nbsp;&nbsp;ㄴ&nbsp;${dto.title}</td>
-			</c:if>
+				<td>${dto.title}</td>
 				<td>${dto.author}</td>
 				<td>${dto.lastmodified}</td>
 				<td>${dto.hit}</td>

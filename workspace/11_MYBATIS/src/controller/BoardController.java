@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -8,10 +9,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.board.BoardCommand;
+import command.board.DeleteCommand;
+import command.board.FindListCommand;
 import command.board.IndexCommand;
 import command.board.InsertCommand;
 import command.board.InsertPageCommand;
+import command.board.InsertReplyCommand;
+import command.board.InsertReplyCommand3;
+import command.board.InsertReplyPageCommand;
 import command.board.SelectListCommand;
+import command.board.SelectListCommand2;
+import command.board.SelectListCommand3;
 import common.ModelAndView;
 
 @WebServlet("*.do")
@@ -47,6 +55,26 @@ public class BoardController extends HttpServlet {
 		case "insert.do":
 			command = new InsertCommand();
 			break;
+		case "insertReplyPage.do":
+			command = new InsertReplyPageCommand();
+			break;
+		case "insertReply.do":
+			command = new InsertReplyCommand();
+			break;
+		case "findList.do":
+			command = new FindListCommand();
+			break;
+		case "selectList.do":
+			command = new SelectListCommand2();
+			break;
+		case "delete.do":
+			command = new DeleteCommand();
+			break;
+		case "selectList3.do":
+			command = new SelectListCommand3();
+			break;
+		case "insertReply3.do":
+			command = new InsertReplyCommand3();
 		}
 		
 		if(command == null)

@@ -14,7 +14,7 @@ import dao.BoardDAO;
 import dto.BoardDTO;
 
 // MAPPING : selectListBoard.do
-public class SelectListCommand implements BoardCommand {
+public class SelectListCommand3 implements BoardCommand {
 
 	@Override
 	public ModelAndView execute(HttpServletRequest request, HttpServletResponse response) {
@@ -34,15 +34,15 @@ public class SelectListCommand implements BoardCommand {
 		map.put("beginRecord", beginRecord);
 		map.put("endRecord", endRecord);
 		
-		List<BoardDTO> list = BoardDAO.getInstance().selectList(map);
+		List<BoardDTO> list = BoardDAO.getInstance().selectList3(map);
 		
-		String paging = Paging.getPaging("/11_MYBATIS/selectListBoard.do", totalRecord, recordPerPage, page);
+		String paging = Paging.getPaging("/11_MYBATIS/selectList3.do", totalRecord, recordPerPage, page);
 		
 		request.setAttribute("totalRecord", totalRecord);
 		request.setAttribute("list", list);
 		request.setAttribute("paging", paging);
 		request.setAttribute("seq", totalRecord - (page - 1) * recordPerPage);
-		return new ModelAndView("board/selectList.jsp",false);
+		return new ModelAndView("board/selectList3.jsp",false);
 	}
 
 }

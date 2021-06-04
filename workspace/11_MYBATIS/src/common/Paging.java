@@ -2,13 +2,12 @@ package common;
 
 public class Paging {
 
-	public static String getPaging(String path ,int totalRecord,int recordPerPage, int page) {
+	public static String getPaging(String path ,int totalRecord,int recordPerPage,
+			int pagePerBlock, int page) {
 		// totalPage
 		int totalPage = totalRecord / recordPerPage;
 		if(totalRecord % recordPerPage != 0)
 			totalPage++;
-		// pagePerBlock
-		int pagePerBlock = 5;
 		// beginPage
 		int beginPage = ((page - 1) / pagePerBlock) * pagePerBlock + 1;
 		// endPage
@@ -53,5 +52,14 @@ public class Paging {
 		
 		return str.toString();
 	}
-	
+
+	public static String getPaging(String path ,int totalRecord,int recordPerPage,
+			 int page) {
+		return getPaging(path, totalRecord, recordPerPage, 5, page);
+	}
+
+	public static String getPaging(String path ,int totalRecord,
+			int page) {
+		return getPaging(path, totalRecord, 10, 5, page);
+	}
 }

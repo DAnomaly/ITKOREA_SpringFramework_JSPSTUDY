@@ -6,4 +6,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <!-- namespace는 mapper의 전체경로(패키지 포함)를 작성한다. -->
 <mapper namespace="dao.member">
 	
+	<select id="login" parameterType="dto.Member" resultType="dto.Member">
+		SELECT NO, ID, PW, NAME, EMAIL, PHONE, REGDATE 
+		  FROM MEMBER
+		 WHERE ID = #{id}
+		   AND PW = #{pw}
+	</select>
+	
+	<select id="idCheck" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		  FROM MEMBER
+		 WHERE ID = #{id}
+	</select>
+	
+	<insert id="join" parameterType="dto.Member">
+		INSERT INTO MEMBER
+		VALUES (MEMBER_SEQ.NEXTVAL, #{id}, #{pw}, #{name}, #{email}, #{phone}, SYSTIMESTAMP)
+	</insert>
+	
+	<update id="update" parameterType="dto.Member">
+		UPDATE MEMBER 
+		   SET name = #{name}
+		     , email = #{email}
+		     , phone = #{phone}
+		<if test="pw != null">
+		     , pw = #{pw}
+		</if> 
+		 WHERE no = #{no}
+	</update>
+	
+	<delete id="delete" parameterType="long">
+		DELETE FROM MEMBER
+		      WHERE no = #{no}
+	</delete>
+	
 </mapper>

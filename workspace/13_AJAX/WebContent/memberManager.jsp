@@ -1,5 +1,11 @@
+<%@page import="java.util.Optional"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+	Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+	int nowPage = Integer.parseInt(opt.orElse("1"));
+	request.setAttribute("nowPage", nowPage);
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,6 +25,7 @@
 			$.ajax({
 				url: 'selectMemberList.do',
 				type: 'get',
+				data: 'page=${nowPage}',
 				dataType: 'json',
 				success: function(result) {
 						if( result.isExist ) { // 목록이 있다면
@@ -35,9 +42,10 @@
 		}
 		
 		function generateMemberList(result) {
+			$('#totalMember').text('전체 회원 수: ' + result.paging.totalRecord);
 			for (var i = 0; i < result.list.length; i++) {
 				var member = result.list[i];
-				var tr = $('<tr>').attr('id','tr_no_' + member.no);
+				var tr = $('<tr>').attr('id','tr_no_' + member.no).attr('onclick','search(' + member.no + ')');
 				$('<td>').text(member.no).appendTo(tr);
 				$('<td>').text(member.id).appendTo(tr);
 				$('<td>').text(member.name).appendTo(tr);
@@ -46,6 +54,9 @@
 				$('<td>').html('<input type="button" value="조회" onclick="search(' + member.no + ')"/> <input type="button" value="삭제" onclick="del(' + member.no + ')"/>').appendTo(tr);
 				$('#memberList').append(tr);
 			}
+			var tr = $('<tr id="paging">')
+			$('<td colspan="6">').html(result.paging.toHTML).appendTo(tr);
+			$('#memberList').append(tr);
 		}
 		function search(no) {
 			$.ajax({
@@ -199,6 +210,13 @@
 			width: 680px;
 			text-align: center;
 		}
+		#totalMember {
+			text-align: left;
+			padding: 0 10px;
+			font-size: 13px;
+			font-weight: bold;
+			color: #6E6E6E;
+		}
 		table {
 			margin: 0 auto;
 			margin-top: 10px;
@@ -242,6 +260,18 @@
 			background-color: #D8D8D8;
 		}
 
+		#paging td {
+			font-size: 14px;
+			background-color: #A4A4A4;
+			color: #ffffff; 
+		}
+		#paging td a {
+			text-decoration: none;
+			color: #F2F2F2;
+		}
+		#paging td .now_page {
+			font-weight: bold;
+		}
 	</style>
 </head>
 <body>
@@ -279,6 +309,7 @@
 		<%-- 회원목록/삭제 --%>
 		<div class="right">
 			<h3>회원목록/삭제</h3>
+			<div id="totalMember">전체 회원 수: </div>
 			<table>
 				<thead>
 					<tr>

@@ -1,11 +1,6 @@
 <%@page import="java.util.Optional"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%
-	Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
-	int nowPage = Integer.parseInt(opt.orElse("1"));
-	request.setAttribute("nowPage", nowPage);
-%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,12 +15,15 @@
 			$('#reset_btn').on('click',reset);
 		});
 		
-		function selectMemberList() {
+		function selectMemberList(page) {
+			var nowPage = 1;
+			if(page != null)
+				nowPage = page;
 			$('#memberList').empty();
 			$.ajax({
 				url: 'selectMemberList.do',
 				type: 'get',
-				data: 'page=${nowPage}',
+				data: 'page=' + nowPage,
 				dataType: 'json',
 				success: function(result) {
 						if( result.isExist ) { // 목록이 있다면
@@ -33,7 +31,7 @@
 						} else {
 							var td = $('<td colspan="6">').text('회원 목록이 없습니다.');
 							$('<tr>').append(td).appendTo('#memberList');
-						}	
+						}
 					},
 				error: function(xhr, status, error){
 						console.log("회원 목록 로드 에러" + "\n" + status + " : " + error);
@@ -42,6 +40,7 @@
 		}
 		
 		function generateMemberList(result) {
+			
 			$('#totalMember').text('전체 회원 수: ' + result.paging.totalRecord);
 			for (var i = 0; i < result.list.length; i++) {
 				var member = result.list[i];
@@ -54,9 +53,10 @@
 				$('<td>').html('<input type="button" value="조회" onclick="search(' + member.no + ')"/> <input type="button" value="삭제" onclick="del(' + member.no + ')"/>').appendTo(tr);
 				$('#memberList').append(tr);
 			}
-			var tr = $('<tr id="paging">')
+			$('tfoot').remove();
+			var tfoot = $('<tfoot>').appendTo($('#memberList').parent());
+			var tr = $('<tr id="paging">').appendTo(tfoot);
 			$('<td colspan="6">').html(result.paging.toHTML).appendTo(tr);
-			$('#memberList').append(tr);
 		}
 		function search(no) {
 			$.ajax({
@@ -268,6 +268,7 @@
 		#paging td a {
 			text-decoration: none;
 			color: #F2F2F2;
+			cursor: pointer;
 		}
 		#paging td .now_page {
 			font-weight: bold;

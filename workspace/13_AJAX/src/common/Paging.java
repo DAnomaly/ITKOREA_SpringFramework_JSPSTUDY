@@ -20,10 +20,7 @@ public class Paging {
 		if (beginPage == 1) {
 			str.append("◁");
 		} else {
-			if(path.contains("?")) 
-				str.append("<a href=\"").append(path).append("&page=").append(beginPage - 1).append("\">◀</a>");
-			else
-				str.append("<a href=\"").append(path).append("?page=").append(beginPage - 1).append("\">◀</a>");
+			str.append("<a onclick=\"").append(path).append("(").append(beginPage - 1).append(")\">◀</a>");
 		}
 		str.append("&nbsp;");
 		/* 1 2 3 4 5 */
@@ -32,10 +29,7 @@ public class Paging {
 			if( page == i ) {
 				str.append("<span class=\"now_page\">").append(i).append("</span>");
 			} else {
-				if(path.contains("?"))
-					str.append("<a href=\"").append(path).append("&page=").append(i).append("\">").append(i).append("</a>");
-				else
-					str.append("<a href=\"").append(path).append("?page=").append(i).append("\">").append(i).append("</a>");
+				str.append("<a onclick=\"").append(path).append("(").append(i).append(")\">").append(i).append("</a>");
 			}
 			str.append("&nbsp;");
 		}
@@ -44,10 +38,7 @@ public class Paging {
 		if (endPage == totalPage) {
 			str.append("▷");
 		} else {
-			if(path.contains("?"))
-				str.append("<a href=\"").append(path).append("&page=").append(endPage + 1).append("\">▶</a>");
-			else
-				str.append("<a href=\"").append(path).append("?page=").append(endPage + 1).append("\">▶</a>");
+			str.append("<a onclick=\"").append(path).append("(").append(endPage + 1).append(")\">▶</a>");
 		}
 		
 		return str.toString();

@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,16 +24,18 @@ public class SelectMemberListCommand implements Command {
 		
 		// paging 처리
 		JSONObject paging = new JSONObject();
-		Optional<String> optional = Optional.ofNullable(request.getParameter("page"));
-		int page = Integer.parseInt(optional.orElse("1"));
+		int page = Integer.parseInt(request.getParameter("page"));
+		paging.put("page", page);
 		
 		int totalRecord = MemberDAO.getInstance().getMemberCount();
 		paging.put("totalRecord", totalRecord);
 		
 		int recordPerPage = 10;
+		paging.put("recordPerPage", recordPerPage);
 		int pagePerBlock = 5;
+		paging.put("pagePerBlock", pagePerBlock);
 		
-		String strPaging = Paging.getPaging("/13_AJAX/memberManager.jsp", totalRecord, recordPerPage, pagePerBlock, page);
+		String strPaging = Paging.getPaging("selectMemberList", totalRecord, recordPerPage, pagePerBlock, page);
 		paging.put("toHTML", strPaging);
 		
 		obj.put("paging",paging);
@@ -42,9 +43,13 @@ public class SelectMemberListCommand implements Command {
 		// member list 불러오기
 		int beginRecord = (page - 1) * recordPerPage + 1;
 		int endRecord = beginRecord + recordPerPage - 1;
+		if(endRecord > totalRecord) 
+			endRecord = totalRecord;
 		Map<String, Object> recordMap = new HashMap<String, Object>();
 		recordMap.put("beginRecord", beginRecord);
+		paging.put("beginRecord", beginRecord);
 		recordMap.put("endRecord", endRecord);
+		paging.put("endRecord", endRecord);
 		List<Member> list = MemberDAO.getInstance().selectMemberList(recordMap);
 		if(list.size() > 0) {
 			obj.put("isExist", true);

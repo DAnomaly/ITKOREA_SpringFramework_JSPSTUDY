@@ -101,6 +101,7 @@ public class PersonDAO {
 			con = getConnection();
 			sql = "SELECT SNO, NAME, AGE, BIRTHDAY, REGDATE FROM PERSON WHERE SNO = ?";
 			ps = con.prepareStatement(sql);
+			ps.setString(1, sno);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				person = new Person();

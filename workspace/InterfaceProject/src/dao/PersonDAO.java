@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,7 +81,7 @@ public class PersonDAO {
 		return list;
 	}
 	
-	public int insertPerson(Person person) throws SQLException {
+	public int insertPerson(Person person) throws SQLIntegrityConstraintViolationException, SQLException {
 		int result = 0;
 		con = getConnection();
 		sql = "INSERT INTO PERSON VALUES(?, ?, ?, ?, SYSDATE)";
@@ -115,5 +116,21 @@ public class PersonDAO {
 			close(con, ps, rs);
 		}
 		return person;
+	}
+	
+	public int deletePerson(int sno) {
+		int result = 0;
+		try {
+			con = getConnection();
+			sql = "DELETE FROM PERSON WHERE SNO = ?";
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, sno);
+			result = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, null);
+		}
+		return result;
 	}
 }

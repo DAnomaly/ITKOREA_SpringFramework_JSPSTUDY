@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+.container {
+	width: 850px;
+	margin: 0 auto;
+}
+
+.insert_form {
+	width: 200px;
+	float: left;
+}
+
+.list_form {
+	width: 600px;
+	float: right;
+}
+
+table {
+	margin: 0 auto;
+	font-size: 14px;
+	text-align: center;
+	background-color: #d0d0d0;
+	border-collapse: collapse;
+}
+
+thead {
+	color: #ffffff;
+	font-weight: bold;
+	background-color: #b8b8b8;
+}
+
+td {
+	border-bottom: 1px solid #ffffff;
+	padding: 5px;
+}
+
+table tr td:nth-of-type(1) {width: 80px;}
+table tr td:nth-of-type(2) {width: 120px;}
+table tr td:nth-of-type(3) {width: 50px;}
+table tr td:nth-of-type(4) {width: 80px;}
+table tr td:nth-of-type(5) {width: 80px;}
+table tr td:nth-of-type(6) {width: 50px;}
+		
